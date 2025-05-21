@@ -1,14 +1,17 @@
 # APILama
 
-APILama is the backend API service for the PyLama ecosystem. It serves as the communication layer between the frontend WebLama interface and the various backend services (PyLama, PyBox, PyLLM, SheLLama).
+APILama is the API gateway for the PyLama ecosystem. It serves as the central communication layer between the frontend WebLama interface and the various backend services (PyLama, PyBox, PyLLM, SheLLama).
 
 ## Features
 
-- RESTful API endpoints for all PyLama ecosystem services
-- Authentication and authorization for API access
-- Request routing to appropriate backend services
-- Response formatting and standardization
-- Error handling and logging
+- **Unified API Gateway**: Single entry point for all PyLama ecosystem services
+- **Service Routing**: Intelligent routing of requests to appropriate backend services (PyBox, PyLLM, SheLLama, PyLama)
+- **RESTful API Design**: Clean and consistent API endpoints for all operations
+- **Cross-Origin Resource Sharing (CORS)**: Support for cross-origin requests from the WebLama frontend
+- **Authentication and Authorization**: Secure access to API endpoints
+- **Response Standardization**: Consistent response format across all services
+- **Error Handling**: Comprehensive error handling and reporting
+- **Logging and Monitoring**: Detailed logging of requests and responses for debugging and monitoring
 
 ## Installation
 
