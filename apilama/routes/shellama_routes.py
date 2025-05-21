@@ -5,30 +5,32 @@
 SheLLama API Routes
 
 This module provides Flask routes for interacting with the SheLLama service.
+It proxies requests to the SheLLama REST API service.
 """
 
 import os
-import sys
-import importlib.util
+import requests
+import json
 from flask import Blueprint, request, jsonify, current_app
 from apilama.logger import logger
 
 # Create a blueprint for SheLLama routes
 shellama_routes = Blueprint('shellama_routes', __name__)
 
-# Try to import SheLLama modules
-try:
-    # Add shellama package to the path if needed
-    shellama_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'shellama'))
-    if shellama_path not in sys.path:
-        sys.path.append(shellama_path)
-    
-    # Import SheLLama modules
-    from shellama import file_ops, dir_ops, shell, git_ops
-    SHELLAMA_AVAILABLE = True
-except ImportError as e:
-    logger.error(f'Error importing SheLLama modules: {str(e)}')
-    SHELLAMA_AVAILABLE = False
+# Get SheLLama service URL from environment variable or use default
+SHELLAMA_API_URL = os.environ.get('SHELLAMA_API_URL', 'http://localhost:8002')
+
+# Function to check if SheLLama service is available
+def is_shellama_available():
+    try:
+        response = requests.get(f"{SHELLAMA_API_URL}/health", timeout=2)
+        return response.status_code == 200
+    except Exception as e:
+        logger.error(f"Error connecting to SheLLama service: {str(e)}")
+        return False
+
+# Check if SheLLama service is available
+SHELLAMA_AVAILABLE = is_shellama_available()
 
 
 @shellama_routes.route('/api/shellama/health', methods=['GET'])
@@ -40,11 +42,36 @@ def health_check():
     """
     logger.info('SheLLama health check')
     
-    return jsonify({
-        'status': 'ok' if SHELLAMA_AVAILABLE else 'error',
-        'service': 'shellama',
-        'available': SHELLAMA_AVAILABLE
-    })
+    try:
+        # Forward the request to the SheLLama service
+        response = requests.get(f"{SHELLAMA_API_URL}/health", timeout=5)
+        
+        if response.status_code == 200:
+            # Return the SheLLama service response
+            shellama_response = response.json()
+            return jsonify({
+                'status': 'ok',
+                'service': 'shellama',
+                'available': True,
+                'details': shellama_response
+            })
+        else:
+            # Return error if SheLLama service returns non-200 status code
+            return jsonify({
+                'status': 'error',
+                'service': 'shellama',
+                'available': False,
+                'message': f"SheLLama service returned status code {response.status_code}"
+            }), 502
+    except Exception as e:
+        # Return error if SheLLama service is unavailable
+        logger.error(f"Error connecting to SheLLama service: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'service': 'shellama',
+            'available': False,
+            'message': f"Error connecting to SheLLama service: {str(e)}"
+        }), 502
 
 
 @shellama_routes.route('/api/shellama/files', methods=['GET'])
@@ -68,15 +95,27 @@ def get_files():
     logger.info(f'Listing files in directory: {directory} with pattern: {pattern}')
     
     try:
-        # Get the list of files
-        files = file_ops.list_files(directory, pattern)
+        # Forward the request to the SheLLama service
+        response = requests.get(
+            f"{SHELLAMA_API_URL}/files",
+            params={'directory': directory, 'pattern': pattern},
+            timeout=10
+        )
         
-        return jsonify({
-            'status': 'success',
-            'files': files
-        })
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Return the SheLLama service response
+            return jsonify(response.json())
+        else:
+            # Return error if SheLLama service returns non-200 status code
+            error_message = f"SheLLama service returned status code {response.status_code}"
+            logger.error(error_message)
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 502
     except Exception as e:
-        logger.error(f'Error listing files in directory {directory}: {str(e)}')
+        logger.error(f'Error listing files: {str(e)}')
         return jsonify({
             'status': 'error',
             'message': str(e)
