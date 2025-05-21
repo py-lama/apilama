@@ -26,12 +26,89 @@ pip install -e .
 
 ## Usage
 
-```bash
-# Start the API server
-apilama run
+### Running the API Gateway
 
-# Or with custom port
-apilama run --port 8000
+```bash
+# Start the API server with default settings
+python -m apilama.app --port 8080 --host 127.0.0.1
+
+# Or with environment variables
+export PORT=8080
+export HOST=127.0.0.1
+python -m apilama.app
+```
+
+### Using the Makefile
+
+```bash
+# Start the API server with default settings
+make run
+
+# Start with custom port
+make run PORT=8090
+```
+
+### Environment Variables
+
+APILama uses the following environment variables for configuration:
+
+- `PORT`: The port to run the server on (default: 8080)
+- `HOST`: The host to bind to (default: 127.0.0.1)
+- `DEBUG`: Enable debug mode (default: False)
+- `PYBOX_API_URL`: URL of the PyBox API (default: http://localhost:8000)
+- `PYLLM_API_URL`: URL of the PyLLM API (default: http://localhost:8001)
+- `SHELLAMA_API_URL`: URL of the SheLLama API (default: http://localhost:8002)
+- `PYLAMA_API_URL`: URL of the PyLama API (default: http://localhost:8003)
+
+You can set these variables in a `.env` file or pass them directly when starting the server.
+
+## API Documentation
+
+### Health Check
+```
+GET /api/health
+```
+Returns the health status of the APILama service.
+
+### SheLLama Endpoints
+
+#### File Operations
+```
+GET /api/shellama/files?directory=/path/to/dir   # List files in a directory
+GET /api/shellama/file?filename=/path/to/file     # Get file content
+POST /api/shellama/file                           # Create/update a file
+DELETE /api/shellama/file?filename=/path/to/file  # Delete a file
+```
+
+#### Directory Operations
+```
+GET /api/shellama/directory?directory=/path/to/dir  # Get directory information
+POST /api/shellama/directory                        # Create a directory
+DELETE /api/shellama/directory?directory=/path      # Delete a directory
+```
+
+#### Shell Operations
+```
+POST /api/shellama/shell  # Execute a shell command
+```
+
+### PyBox Endpoints
+```
+GET /api/pybox/health     # Check PyBox health
+POST /api/pybox/execute   # Execute Python code
+```
+
+### PyLLM Endpoints
+```
+GET /api/pyllm/health     # Check PyLLM health
+POST /api/pyllm/generate  # Generate code or text
+```
+
+### PyLama Endpoints
+```
+GET /api/pylama/health    # Check PyLama health
+GET /api/pylama/models    # List available models
+POST /api/pylama/execute  # Execute a model
 ```
 
 ## Development
