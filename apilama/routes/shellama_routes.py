@@ -149,20 +149,35 @@ def get_file_content():
     logger.info(f'Getting content of file: {filename}')
     
     try:
-        # Read the file content
-        content = file_ops.read_file(filename)
+        # Forward the request to the SheLLama service
+        response = requests.get(
+            f"{SHELLAMA_API_URL}/file",
+            params={'filename': filename},
+            timeout=10
+        )
         
-        return jsonify({
-            'status': 'success',
-            'content': content,
-            'name': os.path.basename(filename)
-        })
-    except FileNotFoundError:
-        logger.error(f'File not found: {filename}')
-        return jsonify({
-            'status': 'error',
-            'message': f'File not found: {filename}'
-        }), 404
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Return the SheLLama service response with the filename added
+            shellama_response = response.json()
+            if 'name' not in shellama_response and shellama_response.get('status') == 'success':
+                shellama_response['name'] = os.path.basename(filename)
+            return jsonify(shellama_response)
+        elif response.status_code == 404:
+            # File not found
+            logger.error(f'File not found: {filename}')
+            return jsonify({
+                'status': 'error',
+                'message': f'File not found: {filename}'
+            }), 404
+        else:
+            # Return error if SheLLama service returns other non-200 status code
+            error_message = f"SheLLama service returned status code {response.status_code}"
+            logger.error(error_message)
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 502
     except Exception as e:
         logger.error(f'Error reading file {filename}: {str(e)}')
         return jsonify({
@@ -187,29 +202,56 @@ def create_file():
     
     data = request.get_json()
     
-    if not data or 'path' not in data or 'content' not in data:
+    # Adapt to both API formats - support both 'path' and 'filename' fields for compatibility
+    if not data:
+        logger.error('Invalid request: No JSON data provided')
+        return jsonify({
+            'status': 'error',
+            'message': 'No JSON data provided'
+        }), 400
+    
+    # Handle both 'path' and 'filename' for backward compatibility
+    filename = data.get('filename') or data.get('path')
+    content = data.get('content')
+    
+    if not filename or content is None:
         logger.error('Invalid request: Missing required fields')
         return jsonify({
             'status': 'error',
-            'message': 'Missing required fields (path, content)'
+            'message': 'Missing required fields (filename/path, content)'
         }), 400
     
-    path = data['path']
-    content = data['content']
-    
-    logger.info(f'Creating/updating file: {path}')
+    logger.info(f'Creating/updating file: {filename}')
     
     try:
-        # Write the file content
-        file_ops.write_file(path, content)
+        # Forward the request to the SheLLama service
+        response = requests.post(
+            f"{SHELLAMA_API_URL}/file",
+            json={
+                'filename': filename,
+                'content': content
+            },
+            timeout=10
+        )
         
-        return jsonify({
-            'status': 'success',
-            'message': f'File {path} created/updated successfully',
-            'path': path
-        })
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Return the SheLLama service response
+            shellama_response = response.json()
+            # Add path for backward compatibility if not present
+            if 'path' not in shellama_response and shellama_response.get('status') == 'success':
+                shellama_response['path'] = filename
+            return jsonify(shellama_response)
+        else:
+            # Return error if SheLLama service returns non-200 status code
+            error_message = f"SheLLama service returned status code {response.status_code}"
+            logger.error(error_message)
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 502
     except Exception as e:
-        logger.error(f'Error writing file {path}: {str(e)}')
+        logger.error(f'Error writing file {filename}: {str(e)}')
         return jsonify({
             'status': 'error',
             'message': str(e)
