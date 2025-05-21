@@ -285,19 +285,32 @@ def delete_file():
     logger.info(f'Deleting file: {filename}')
     
     try:
-        # Delete the file
-        file_ops.delete_file(filename)
+        # Forward the request to the SheLLama service
+        response = requests.delete(
+            f"{SHELLAMA_API_URL}/file",
+            params={'filename': filename},
+            timeout=10
+        )
         
-        return jsonify({
-            'status': 'success',
-            'message': f'File {filename} deleted successfully'
-        })
-    except FileNotFoundError:
-        logger.error(f'File not found: {filename}')
-        return jsonify({
-            'status': 'error',
-            'message': f'File not found: {filename}'
-        }), 404
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Return the SheLLama service response
+            return jsonify(response.json())
+        elif response.status_code == 404:
+            # File not found
+            logger.error(f'File not found: {filename}')
+            return jsonify({
+                'status': 'error',
+                'message': f'File not found: {filename}'
+            }), 404
+        else:
+            # Return error if SheLLama service returns other non-200 status code
+            error_message = f"SheLLama service returned status code {response.status_code}"
+            logger.error(error_message)
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 502
     except Exception as e:
         logger.error(f'Error deleting file {filename}: {str(e)}')
         return jsonify({
@@ -326,19 +339,32 @@ def get_directories():
     logger.info(f'Listing directories in: {directory}')
     
     try:
-        # Get the list of directories
-        directories = dir_ops.list_directories(directory)
+        # Forward the request to the SheLLama service
+        response = requests.get(
+            f"{SHELLAMA_API_URL}/directories",
+            params={'directory': directory},
+            timeout=10
+        )
         
-        return jsonify({
-            'status': 'success',
-            'directories': directories
-        })
-    except FileNotFoundError:
-        logger.error(f'Directory not found: {directory}')
-        return jsonify({
-            'status': 'error',
-            'message': f'Directory not found: {directory}'
-        }), 404
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Return the SheLLama service response
+            return jsonify(response.json())
+        elif response.status_code == 404:
+            # Directory not found
+            logger.error(f'Directory not found: {directory}')
+            return jsonify({
+                'status': 'error',
+                'message': f'Directory not found: {directory}'
+            }), 404
+        else:
+            # Return error if SheLLama service returns other non-200 status code
+            error_message = f"SheLLama service returned status code {response.status_code}"
+            logger.error(error_message)
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 502
     except Exception as e:
         logger.error(f'Error listing directories in {directory}: {str(e)}')
         return jsonify({
@@ -363,26 +389,50 @@ def create_directory():
     
     data = request.get_json()
     
-    if not data or 'path' not in data:
+    # Handle both 'path' and 'directory' for backward compatibility
+    if not data:
+        logger.error('Invalid request: No JSON data provided')
+        return jsonify({
+            'status': 'error',
+            'message': 'No JSON data provided'
+        }), 400
+    
+    # Get path from either 'path' or 'directory' field
+    path = data.get('path') or data.get('directory')
+    
+    if not path:
         logger.error('Invalid request: Missing required fields')
         return jsonify({
             'status': 'error',
-            'message': 'Missing required field (path)'
+            'message': 'Missing required field (path or directory)'
         }), 400
-    
-    path = data['path']
     
     logger.info(f'Creating directory: {path}')
     
     try:
-        # Create the directory
-        dir_ops.create_directory(path)
+        # Forward the request to the SheLLama service
+        response = requests.post(
+            f"{SHELLAMA_API_URL}/directory",
+            json={'directory': path},
+            timeout=10
+        )
         
-        return jsonify({
-            'status': 'success',
-            'message': f'Directory {path} created successfully',
-            'path': path
-        })
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Return the SheLLama service response
+            shellama_response = response.json()
+            # Add path for backward compatibility if not present
+            if 'path' not in shellama_response and shellama_response.get('status') == 'success':
+                shellama_response['path'] = path
+            return jsonify(shellama_response)
+        else:
+            # Return error if SheLLama service returns non-200 status code
+            error_message = f"SheLLama service returned status code {response.status_code}"
+            logger.error(error_message)
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 502
     except Exception as e:
         logger.error(f'Error creating directory {path}: {str(e)}')
         return jsonify({
@@ -419,19 +469,35 @@ def delete_directory():
     logger.info(f'Deleting directory: {directory} (recursive={recursive})')
     
     try:
-        # Delete the directory
-        dir_ops.delete_directory(directory, recursive)
+        # Forward the request to the SheLLama service
+        response = requests.delete(
+            f"{SHELLAMA_API_URL}/directory",
+            params={
+                'directory': directory,
+                'recursive': str(recursive).lower()
+            },
+            timeout=10
+        )
         
-        return jsonify({
-            'status': 'success',
-            'message': f'Directory {directory} deleted successfully'
-        })
-    except FileNotFoundError:
-        logger.error(f'Directory not found: {directory}')
-        return jsonify({
-            'status': 'error',
-            'message': f'Directory not found: {directory}'
-        }), 404
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Return the SheLLama service response
+            return jsonify(response.json())
+        elif response.status_code == 404:
+            # Directory not found
+            logger.error(f'Directory not found: {directory}')
+            return jsonify({
+                'status': 'error',
+                'message': f'Directory not found: {directory}'
+            }), 404
+        else:
+            # Return error if SheLLama service returns other non-200 status code
+            error_message = f"SheLLama service returned status code {response.status_code}"
+            logger.error(error_message)
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 502
     except Exception as e:
         logger.error(f'Error deleting directory {directory}: {str(e)}')
         return jsonify({
@@ -471,21 +537,36 @@ def execute_shell_command():
     logger.info(f'Executing shell command: {command}')
     
     try:
-        # Execute the command
-        result = shell.execute_command(
-            command,
-            cwd=cwd,
-            timeout=timeout,
-            shell=use_shell
+        # Forward the request to the SheLLama service
+        request_data = {
+            'command': command,
+            'shell': use_shell
+        }
+        
+        # Add optional parameters if they exist
+        if cwd is not None:
+            request_data['cwd'] = cwd
+        if timeout is not None:
+            request_data['timeout'] = timeout
+        
+        response = requests.post(
+            f"{SHELLAMA_API_URL}/shell",
+            json=request_data,
+            timeout=30  # Longer timeout for shell commands
         )
         
-        return jsonify({
-            'status': 'success' if result['success'] else 'error',
-            'exit_code': result['exit_code'],
-            'stdout': result['stdout'],
-            'stderr': result['stderr'],
-            'execution_time': result['execution_time']
-        })
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Return the SheLLama service response
+            return jsonify(response.json())
+        else:
+            # Return error if SheLLama service returns non-200 status code
+            error_message = f"SheLLama service returned status code {response.status_code}"
+            logger.error(error_message)
+            return jsonify({
+                'status': 'error',
+                'message': error_message
+            }), 502
     except Exception as e:
         logger.error(f'Error executing shell command {command}: {str(e)}')
         return jsonify({
