@@ -42,6 +42,8 @@ from apilama.routes.pylama_routes import pylama_routes
 from apilama.routes.pybox_routes import pybox_routes
 from apilama.routes.pyllm_routes import pyllm_routes
 from apilama.routes.shellama_routes import shellama_routes
+from apilama.routes.file_routes import file_routes
+from apilama.routes.git_routes import git_routes
 
 
 def create_app(test_config=None):
@@ -74,6 +76,8 @@ def create_app(test_config=None):
     app.register_blueprint(pybox_routes)
     app.register_blueprint(pyllm_routes)
     app.register_blueprint(shellama_routes)
+    app.register_blueprint(file_routes)
+    app.register_blueprint(git_routes)
     
     # Add a health check endpoint
     @app.route('/health')
