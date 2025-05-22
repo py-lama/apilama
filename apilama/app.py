@@ -7,33 +7,25 @@ APILama - Main application module
 This module provides the Flask application for the APILama service.
 """
 
+# Initialize logging FIRST, before any other imports
+# This ensures environment variables are loaded before other libraries
+from apilama.logging_config import init_logging, get_logger
+
+# Initialize logging with PyLogs
+init_logging()
+
+# Now import other standard libraries
 import os
 import sys
 import argparse
-import logging
 from pathlib import Path
 
-# Handle different ways the dotenv package might be installed
-try:
-    from dotenv import load_dotenv
-except ImportError:
-    try:
-        from python_dotenv import load_dotenv
-    except ImportError:
-        # If dotenv is not available, define a dummy function
-        def load_dotenv(path=None):
-            logging.warning("python-dotenv package not found, environment variables from .env will not be loaded")
-            pass
-
-from flask import Flask, jsonify
+# Flask imports
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-# Load environment variables from .env file
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
-load_dotenv(env_path)
-
-# Import custom logger
-from apilama.logger import logger, init_app
+# Get the logger
+logger = get_logger('apilama')
 
 # Add the parent directory to sys.path to import pylama modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -73,8 +65,15 @@ def create_app(test_config=None):
     if test_config is not None:
         app.config.update(test_config)
     
-    # Initialize the logger
-    init_app(app)
+    # Add request logging middleware
+    @app.before_request
+    def log_request_info():
+        logger.debug(f"Request: {request.method} {request.url} from {request.remote_addr}")
+        
+    @app.after_request
+    def log_response_info(response):
+        logger.debug(f"Response: {response.status_code}")
+        return response
     
     # Register blueprints
     app.register_blueprint(pylama_routes)
@@ -90,10 +89,22 @@ def create_app(test_config=None):
     def health_check():
         return jsonify({'status': 'ok', 'service': 'apilama'})
     
-    # Log the initialization
-    logger.info(f"APILama initialized")
-    logger.info(f"CORS enabled for all origins")
-    logger.info(f"Debug mode: {app.config['DEBUG']}")
+    # Log the initialization with structured context
+    logger.info("APILama initialized", extra={
+        'context': {
+            'cors_enabled': True,
+            'debug_mode': app.config['DEBUG'],
+            'blueprints': [
+                'pylama_routes',
+                'pybox_routes',
+                'pyllm_routes',
+                'shellama_routes',
+                'file_routes',
+                'git_routes',
+                'weblama_routes'
+            ]
+        }
+    })
     
     return app
 
