@@ -1,0 +1,64 @@
+---
+# Directory Operations Tests
+# Tests all directory-related endpoints in APILama
+
+- name: Test Directory Operations - Get Directory Info
+  uri:
+    url: "{{ api_base_url }}/api/shellama/directory?directory=/tmp"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: directory_info_result
+  failed_when: directory_info_result.json.status != "success"
+  ignore_errors: yes
+
+- name: Display Directory Info Result
+  debug:
+    var: directory_info_result.json
+  when: directory_info_result is defined
+
+- name: Test Directory Operations - Create Test Directory
+  uri:
+    url: "{{ api_base_url }}/api/shellama/directory"
+    method: POST
+    body_format: json
+    body:
+      directory: "/tmp/ansible_test_dir"
+    status_code: 200
+  register: create_dir_result
+  failed_when: create_dir_result.json.status != "success"
+  ignore_errors: yes
+
+- name: Display Create Directory Result
+  debug:
+    var: create_dir_result.json
+  when: create_dir_result is defined
+
+- name: Test Directory Operations - Verify Directory Creation
+  uri:
+    url: "{{ api_base_url }}/api/shellama/directory?directory=/tmp/ansible_test_dir"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: verify_dir_result
+  failed_when: verify_dir_result.json.status != "success"
+  ignore_errors: yes
+
+- name: Display Verify Directory Result
+  debug:
+    var: verify_dir_result.json
+  when: verify_dir_result is defined
+
+- name: Test Directory Operations - Delete Test Directory
+  uri:
+    url: "{{ api_base_url }}/api/shellama/directory?directory=/tmp/ansible_test_dir"
+    method: DELETE
+    status_code: 200
+  register: delete_dir_result
+  failed_when: delete_dir_result.json.status != "success"
+  ignore_errors: yes
+
+- name: Display Delete Directory Result
+  debug:
+    var: delete_dir_result.json
+  when: delete_dir_result is defined

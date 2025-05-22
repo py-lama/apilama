@@ -1,0 +1,90 @@
+---
+# PyBox Tests
+# Tests all PyBox-related endpoints in APILama
+
+- name: Test PyBox Health Endpoint
+  uri:
+    url: "{{ api_base_url }}/api/pybox/health"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: pybox_health_result
+  failed_when: pybox_health_result.json.status != "ok"
+  ignore_errors: yes  # Continue even if PyBox is not available
+
+- name: Display PyBox Health Result
+  debug:
+    var: pybox_health_result.json
+  when: pybox_health_result is defined
+
+- name: Test PyBox Execute Endpoint - Simple Print
+  uri:
+    url: "{{ api_base_url }}/api/pybox/execute"
+    method: POST
+    body_format: json
+    body:
+      code: "print('Hello from Ansible PyBox test!')"
+      options:
+        timeout: 5
+        memory_limit: 128
+    status_code: 200
+  register: pybox_execute_result
+  failed_when: pybox_execute_result.json.status != "success"
+  ignore_errors: yes  # Continue even if PyBox is not available
+
+- name: Display PyBox Execute Result
+  debug:
+    var: pybox_execute_result.json
+  when: pybox_execute_result is defined
+
+- name: Test PyBox Execute Endpoint - Math Operations
+  uri:
+    url: "{{ api_base_url }}/api/pybox/execute"
+    method: POST
+    body_format: json
+    body:
+      code: |
+        # Simple math operations
+        a = 10
+        b = 5
+        print(f'Addition: {a + b}')
+        print(f'Subtraction: {a - b}')
+        print(f'Multiplication: {a * b}')
+        print(f'Division: {a / b}')
+      options:
+        timeout: 5
+        memory_limit: 128
+    status_code: 200
+  register: pybox_math_result
+  failed_when: pybox_math_result.json.status != "success"
+  ignore_errors: yes  # Continue even if PyBox is not available
+
+- name: Display PyBox Math Result
+  debug:
+    var: pybox_math_result.json
+  when: pybox_math_result is defined
+
+- name: Test PyBox Execute Endpoint - List Comprehension
+  uri:
+    url: "{{ api_base_url }}/api/pybox/execute"
+    method: POST
+    body_format: json
+    body:
+      code: |
+        # List comprehension example
+        numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        even_numbers = [x for x in numbers if x % 2 == 0]
+        print(f'Original list: {numbers}')
+        print(f'Even numbers: {even_numbers}')
+      options:
+        timeout: 5
+        memory_limit: 128
+    status_code: 200
+  register: pybox_list_result
+  failed_when: pybox_list_result.json.status != "success"
+  ignore_errors: yes  # Continue even if PyBox is not available
+
+- name: Display PyBox List Result
+  debug:
+    var: pybox_list_result.json
+  when: pybox_list_result is defined

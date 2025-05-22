@@ -1,0 +1,73 @@
+---
+# File Operations Tests
+# Tests all file-related endpoints in APILama
+
+- name: Test File Operations - Create File
+  uri:
+    url: "{{ api_base_url }}/api/file"
+    method: POST
+    body_format: json
+    body:
+      filename: "test_ansible_file.md"
+      content: "# Test Markdown File\n\nThis file was created by Ansible tests."
+    status_code: 200
+  register: create_file_result
+  failed_when: create_file_result.json.status != "success"
+
+- name: Display Create File Result
+  debug:
+    var: create_file_result.json
+
+- name: Test File Operations - Get Files List
+  uri:
+    url: "{{ api_base_url }}/api/files"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: files_list_result
+  failed_when: files_list_result.json.status != "success"
+
+- name: Display Files List Result
+  debug:
+    var: files_list_result.json
+
+- name: Test File Operations - Get File Content
+  uri:
+    url: "{{ api_base_url }}/api/file?filename=test_ansible_file.md"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: file_content_result
+  failed_when: file_content_result.json.status != "success"
+
+- name: Display File Content Result
+  debug:
+    var: file_content_result.json
+
+- name: Test File Operations - Update File
+  uri:
+    url: "{{ api_base_url }}/api/file"
+    method: POST
+    body_format: json
+    body:
+      filename: "test_ansible_file.md"
+      content: "# Updated Test Markdown File\n\nThis file was updated by Ansible tests."
+    status_code: 200
+  register: update_file_result
+  failed_when: update_file_result.json.status != "success"
+
+- name: Display Update File Result
+  debug:
+    var: update_file_result.json
+
+- name: Test File Operations - Delete File
+  uri:
+    url: "{{ api_base_url }}/api/file?filename=test_ansible_file.md"
+    method: DELETE
+    status_code: 200
+  register: delete_file_result
+  failed_when: delete_file_result.json.status != "success"
+
+- name: Display Delete File Result
+  debug:
+    var: delete_file_result.json

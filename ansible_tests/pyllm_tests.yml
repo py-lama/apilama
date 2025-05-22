@@ -1,0 +1,82 @@
+---
+# PyLLM Tests
+# Tests all PyLLM-related endpoints in APILama
+
+- name: Test PyLLM Health Endpoint
+  uri:
+    url: "{{ api_base_url }}/api/pyllm/health"
+    method: GET
+    return_content: yes
+    status_code: 200
+  register: pyllm_health_result
+  failed_when: pyllm_health_result.json.status != "ok"
+  ignore_errors: yes  # Continue even if PyLLM is not available
+
+- name: Display PyLLM Health Result
+  debug:
+    var: pyllm_health_result.json
+  when: pyllm_health_result is defined
+
+- name: Test PyLLM Generate Endpoint - Simple Text
+  uri:
+    url: "{{ api_base_url }}/api/pyllm/generate"
+    method: POST
+    body_format: json
+    body:
+      prompt: "Write a short paragraph about Python programming."
+      options:
+        max_tokens: 100
+        temperature: 0.7
+        model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
+    status_code: 200
+  register: pyllm_generate_result
+  failed_when: pyllm_generate_result.json.status != "success"
+  ignore_errors: yes  # Continue even if PyLLM is not available
+
+- name: Display PyLLM Generate Result
+  debug:
+    var: pyllm_generate_result.json
+  when: pyllm_generate_result is defined
+
+- name: Test PyLLM Generate Endpoint - Code Generation
+  uri:
+    url: "{{ api_base_url }}/api/pyllm/generate"
+    method: POST
+    body_format: json
+    body:
+      prompt: "Write a Python function to calculate the factorial of a number."
+      options:
+        max_tokens: 150
+        temperature: 0.5
+        model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
+    status_code: 200
+  register: pyllm_code_result
+  failed_when: pyllm_code_result.json.status != "success"
+  ignore_errors: yes  # Continue even if PyLLM is not available
+
+- name: Display PyLLM Code Result
+  debug:
+    var: pyllm_code_result.json
+  when: pyllm_code_result is defined
+
+- name: Test PyLLM Generate Endpoint - With System Prompt
+  uri:
+    url: "{{ api_base_url }}/api/pyllm/generate"
+    method: POST
+    body_format: json
+    body:
+      prompt: "What are the key features of Python?"
+      system_prompt: "You are a helpful programming assistant specializing in Python. Keep your answers concise and focused on Python features."
+      options:
+        max_tokens: 200
+        temperature: 0.7
+        model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
+    status_code: 200
+  register: pyllm_system_result
+  failed_when: pyllm_system_result.json.status != "success"
+  ignore_errors: yes  # Continue even if PyLLM is not available
+
+- name: Display PyLLM System Prompt Result
+  debug:
+    var: pyllm_system_result.json
+  when: pyllm_system_result is defined

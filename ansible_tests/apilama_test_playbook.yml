@@ -1,0 +1,57 @@
+---
+# APILama Test Playbook
+# This playbook tests all endpoints of the APILama service
+
+- name: Test APILama Endpoints
+  hosts: localhost
+  gather_facts: false
+  vars:
+    api_base_url: "{{ lookup('env', 'API_URL') | default('http://localhost:8081', true) }}"
+    test_directory: "/tmp/apilama_test"
+    test_file: "/tmp/apilama_test/test_file.txt"
+    test_content: "This is a test file created by Ansible"
+    python_code: "print('Hello from PyBox!')"
+  
+  tasks:
+    - name: Create test directory if it doesn't exist
+      file:
+        path: "{{ test_directory }}"
+        state: directory
+        mode: '0755'
+
+    # Health Check Tests
+    - name: Test Health Check Endpoint
+      uri:
+        url: "{{ api_base_url }}/health"
+        method: GET
+        return_content: yes
+        status_code: 200
+      register: health_result
+      failed_when: health_result.json.status != "ok"
+
+    - name: Display Health Check Result
+      debug:
+        var: health_result.json
+
+    # Include test files for different service endpoints
+    - name: Include File Operations Tests
+      include_tasks: file_operations_tests.yml
+
+    - name: Include Shell Operations Tests
+      include_tasks: shell_operations_tests.yml
+
+    - name: Include PyBox Tests
+      include_tasks: pybox_tests.yml
+
+    - name: Include PyLLM Tests
+      include_tasks: pyllm_tests.yml
+
+    - name: Include PyLama Tests
+      include_tasks: pylama_tests.yml
+
+    # Cleanup
+    - name: Clean up test directory
+      file:
+        path: "{{ test_directory }}"
+        state: absent
+      when: cleanup_enabled | default(true)

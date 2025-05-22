@@ -26,6 +26,7 @@ except ImportError:
             pass
 
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 # Load environment variables from .env file
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
@@ -59,6 +60,9 @@ def create_app(test_config=None):
     # Create and configure the app
     app = Flask(__name__)
     
+    # Enable CORS for all routes
+    CORS(app, resources={r"/*": {"origins": "*"}})
+    
     # Set default configuration
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY', 'dev'),
@@ -88,6 +92,7 @@ def create_app(test_config=None):
     
     # Log the initialization
     logger.info(f"APILama initialized")
+    logger.info(f"CORS enabled for all origins")
     logger.info(f"Debug mode: {app.config['DEBUG']}")
     
     return app

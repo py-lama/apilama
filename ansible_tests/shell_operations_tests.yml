@@ -1,0 +1,83 @@
+---
+# Shell Operations Tests
+# Tests all shell-related endpoints in APILama
+
+- name: Test Shell Operations - Execute Simple Command
+  uri:
+    url: "{{ api_base_url }}/api/shellama/shell"
+    method: POST
+    body_format: json
+    body:
+      command: "echo 'Hello from Ansible test'"
+      working_directory: "/tmp"
+    status_code: 200
+  register: shell_result
+  failed_when: shell_result.json.status != "success"
+
+- name: Display Shell Command Result
+  debug:
+    var: shell_result.json
+
+- name: Test Shell Operations - List Directory
+  uri:
+    url: "{{ api_base_url }}/api/shellama/shell"
+    method: POST
+    body_format: json
+    body:
+      command: "ls -la /tmp"
+      working_directory: "/tmp"
+    status_code: 200
+  register: ls_result
+  failed_when: ls_result.json.status != "success"
+
+- name: Display List Directory Result
+  debug:
+    var: ls_result.json
+
+- name: Test Shell Operations - Create Test File
+  uri:
+    url: "{{ api_base_url }}/api/shellama/shell"
+    method: POST
+    body_format: json
+    body:
+      command: "touch /tmp/ansible_test_file.txt && echo 'Created by Ansible' > /tmp/ansible_test_file.txt"
+      working_directory: "/tmp"
+    status_code: 200
+  register: create_file_result
+  failed_when: create_file_result.json.status != "success"
+
+- name: Display Create File Result
+  debug:
+    var: create_file_result.json
+
+- name: Test Shell Operations - Read Test File
+  uri:
+    url: "{{ api_base_url }}/api/shellama/shell"
+    method: POST
+    body_format: json
+    body:
+      command: "cat /tmp/ansible_test_file.txt"
+      working_directory: "/tmp"
+    status_code: 200
+  register: read_file_result
+  failed_when: read_file_result.json.status != "success"
+
+- name: Display Read File Result
+  debug:
+    var: read_file_result.json
+
+- name: Test Shell Operations - Delete Test File
+  uri:
+    url: "{{ api_base_url }}/api/shellama/shell"
+    method: POST
+    body_format: json
+    body:
+      command: "rm /tmp/ansible_test_file.txt"
+      working_directory: "/tmp"
+    status_code: 200
+  register: delete_file_result
+  failed_when: delete_file_result.json.status != "success"
+
+- name: Display Delete File Result
+  debug:
+    var: delete_file_result.json

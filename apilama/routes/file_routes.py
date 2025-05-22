@@ -10,7 +10,7 @@ file_routes = Blueprint('file_routes', __name__)
 def get_files():
     """List all markdown files in the markdown directory."""
     try:
-        markdown_dir = os.environ.get('MARKDOWN_DIR', './markdown')
+        markdown_dir = os.environ.get('MARKDOWN_DIR', '~/github/py-lama/weblama/markdown')
         if not os.path.exists(markdown_dir):
             os.makedirs(markdown_dir, exist_ok=True)
             
@@ -53,7 +53,7 @@ def get_file():
                 'message': 'Filename is required'
             }), 400
             
-        markdown_dir = os.environ.get('MARKDOWN_DIR', './markdown')
+        markdown_dir = os.environ.get('MARKDOWN_DIR', '~/github/py-lama/weblama/markdown')
         file_path = os.path.join(markdown_dir, filename)
         
         if not os.path.exists(file_path):
@@ -94,7 +94,7 @@ def save_file():
                 'message': 'Filename and content are required'
             }), 400
             
-        markdown_dir = os.environ.get('MARKDOWN_DIR', './markdown')
+        markdown_dir = os.environ.get('MARKDOWN_DIR', '~/github/py-lama/weblama/markdown')
         if not os.path.exists(markdown_dir):
             os.makedirs(markdown_dir, exist_ok=True)
             
@@ -129,7 +129,7 @@ def delete_file():
                 'message': 'Filename is required'
             }), 400
             
-        markdown_dir = os.environ.get('MARKDOWN_DIR', './markdown')
+        markdown_dir = os.environ.get('MARKDOWN_DIR', '~/github/py-lama/weblama/markdown')
         file_path = os.path.join(markdown_dir, filename)
         
         if not os.path.exists(file_path):
