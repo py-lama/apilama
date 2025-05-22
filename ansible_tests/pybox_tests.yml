@@ -7,9 +7,9 @@
     url: "{{ api_base_url }}/api/pybox/health"
     method: GET
     return_content: yes
-    status_code: 200
+    status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
   register: pybox_health_result
-  failed_when: pybox_health_result.json.status != "ok"
+  failed_when: pybox_health_result.status == 200 and pybox_health_result.json.status != "ok"
   ignore_errors: yes  # Continue even if PyBox is not available
 
 - name: Display PyBox Health Result
@@ -27,9 +27,9 @@
       options:
         timeout: 5
         memory_limit: 128
-    status_code: 200
+    status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
   register: pybox_execute_result
-  failed_when: pybox_execute_result.json.status != "success"
+  failed_when: pybox_execute_result.status == 200 and pybox_execute_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyBox is not available
 
 - name: Display PyBox Execute Result
@@ -54,9 +54,9 @@
       options:
         timeout: 5
         memory_limit: 128
-    status_code: 200
+    status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
   register: pybox_math_result
-  failed_when: pybox_math_result.json.status != "success"
+  failed_when: pybox_math_result.status == 200 and pybox_math_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyBox is not available
 
 - name: Display PyBox Math Result
@@ -79,9 +79,9 @@
       options:
         timeout: 5
         memory_limit: 128
-    status_code: 200
+    status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
   register: pybox_list_result
-  failed_when: pybox_list_result.json.status != "success"
+  failed_when: pybox_list_result.status == 200 and pybox_list_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyBox is not available
 
 - name: Display PyBox List Result

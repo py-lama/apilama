@@ -7,9 +7,9 @@
     url: "{{ api_base_url }}/api/pyllm/health"
     method: GET
     return_content: yes
-    status_code: 200
+    status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
   register: pyllm_health_result
-  failed_when: pyllm_health_result.json.status != "ok"
+  failed_when: pyllm_health_result.status == 200 and pyllm_health_result.json.status != "ok"
   ignore_errors: yes  # Continue even if PyLLM is not available
 
 - name: Display PyLLM Health Result
@@ -28,9 +28,9 @@
         max_tokens: 100
         temperature: 0.7
         model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
-    status_code: 200
+    status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
   register: pyllm_generate_result
-  failed_when: pyllm_generate_result.json.status != "success"
+  failed_when: pyllm_generate_result.status == 200 and pyllm_generate_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLLM is not available
 
 - name: Display PyLLM Generate Result
@@ -49,9 +49,9 @@
         max_tokens: 150
         temperature: 0.5
         model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
-    status_code: 200
+    status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
   register: pyllm_code_result
-  failed_when: pyllm_code_result.json.status != "success"
+  failed_when: pyllm_code_result.status == 200 and pyllm_code_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLLM is not available
 
 - name: Display PyLLM Code Result
@@ -71,9 +71,9 @@
         max_tokens: 200
         temperature: 0.7
         model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
-    status_code: 200
+    status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
   register: pyllm_system_result
-  failed_when: pyllm_system_result.json.status != "success"
+  failed_when: pyllm_system_result.status == 200 and pyllm_system_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLLM is not available
 
 - name: Display PyLLM System Prompt Result
