@@ -6,12 +6,23 @@ from pathlib import Path
 file_routes = Blueprint('file_routes', __name__)
 
 
+def get_markdown_dir():
+    """Get the markdown directory from environment or use default, with proper path expansion."""
+    markdown_dir = os.environ.get('MARKDOWN_DIR', '~/github/py-lama/weblama/markdown')
+    # Expand the tilde to the home directory
+    markdown_dir = os.path.expanduser(markdown_dir)
+    current_app.logger.info(f"Using markdown directory: {markdown_dir}")
+    return markdown_dir
+
+
 @file_routes.route('/api/files', methods=['GET'])
 def get_files():
     """List all markdown files in the markdown directory."""
     try:
-        markdown_dir = os.environ.get('MARKDOWN_DIR', '~/github/py-lama/weblama/markdown')
+        markdown_dir = get_markdown_dir()
+        
         if not os.path.exists(markdown_dir):
+            current_app.logger.info(f"Creating markdown directory: {markdown_dir}")
             os.makedirs(markdown_dir, exist_ok=True)
             
         # Get all markdown files
