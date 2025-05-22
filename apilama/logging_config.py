@@ -12,21 +12,29 @@ import os
 import sys
 from pathlib import Path
 
-# Add the pylogs package to the path if it's not already installed
-pylogs_path = Path(__file__).parent.parent.parent / 'pylogs'
-if pylogs_path.exists() and str(pylogs_path) not in sys.path:
-    sys.path.insert(0, str(pylogs_path))
+# Add the loglama package to the path if it's not already installed
+# The correct path should be: /home/tom/github/py-lama/loglama
+loglama_path = Path(__file__).parent.parent.parent / 'loglama'
+if loglama_path.exists() and str(loglama_path) not in sys.path:
+    sys.path.insert(0, str(loglama_path))
+    print(f"Added PyLogs path: {loglama_path}")
+else:
+    # Try an alternative path calculation
+    alt_loglama_path = Path('/home/tom/github/py-lama/loglama')
+    if alt_loglama_path.exists() and str(alt_loglama_path) not in sys.path:
+        sys.path.insert(0, str(alt_loglama_path))
+        print(f"Added alternative PyLogs path: {alt_loglama_path}")
 
 # Import PyLogs components
 try:
-    from pylogs.config.env_loader import load_env, get_env
-    from pylogs.utils import configure_logging, LogContext, capture_context
-    from pylogs.formatters import ColoredFormatter, JSONFormatter
-    from pylogs.handlers import SQLiteHandler, EnhancedRotatingFileHandler
-    PYLOGS_AVAILABLE = True
+    from loglama.config.env_loader import load_env, get_env
+    from loglama.utils import configure_logging, LogContext, capture_context
+    from loglama.formatters import ColoredFormatter, JSONFormatter
+    from loglama.handlers import SQLiteHandler, EnhancedRotatingFileHandler
+    LOGLAMA_AVAILABLE = True
 except ImportError as e:
     print(f"PyLogs import error: {e}")
-    PYLOGS_AVAILABLE = False
+    LOGLAMA_AVAILABLE = False
 
 
 def init_logging():
@@ -36,7 +44,7 @@ def init_logging():
     This function should be called at the very beginning of the application
     before any other imports or configurations are done.
     """
-    if not PYLOGS_AVAILABLE:
+    if not LOGLAMA_AVAILABLE:
         print("PyLogs package not available. Using default logging configuration.")
         return False
     
@@ -48,10 +56,37 @@ def init_logging():
     log_dir = get_env('APILAMA_LOG_DIR', os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs'))
     db_enabled = get_env('APILAMA_DB_LOGGING', 'true').lower() in ('true', 'yes', '1')
     db_path = get_env('APILAMA_DB_PATH', os.path.join(log_dir, 'apilama.db'))
-    json_format = get_env('APILAMA_JSON_LOGS', 'false').lower() in ('true', 'yes', '1')
+    json_format = get_env('APILAMA_JSON_LOGS', 'true').lower() in ('true', 'yes', '1')  # Default to JSON format for better integration
+    structured_logging = get_env('APILAMA_STRUCTURED_LOGGING', 'true').lower() in ('true', 'yes', '1')
     
     # Ensure log directory exists
     os.makedirs(log_dir, exist_ok=True)
+    
+    # Check if the database exists and handle schema changes
+    if db_enabled and os.path.exists(db_path):
+        try:
+            # Try to connect to the database to check if it has the correct schema
+            import sqlite3
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            cursor.execute(f"PRAGMA table_info(logs)")
+            columns = [column[1] for column in cursor.fetchall()]
+            conn.close()
+            
+            # Check if the required columns exist
+            required_columns = ['level', 'level_no', 'logger_name', 'message']
+            missing_columns = [col for col in required_columns if col not in columns]
+            
+            if missing_columns:
+                print(f"Database schema outdated. Missing columns: {missing_columns}")
+                print(f"Recreating database at {db_path}")
+                os.remove(db_path)
+                print("Old database removed. A new one will be created automatically.")
+        except Exception as e:
+            print(f"Error checking database schema: {e}")
+            print(f"Recreating database at {db_path}")
+            os.remove(db_path)
+            print("Old database removed. A new one will be created automatically.")
     
     # Configure logging
     logger = configure_logging(
@@ -62,8 +97,16 @@ def init_logging():
         file_path=os.path.join(log_dir, 'apilama.log'),
         database=db_enabled,
         db_path=db_path,
-        json=json_format,
-        context_filter=True
+        json=json_format,  # Use JSON format for better integration with LogLama
+        context_filter=True,
+        structured=structured_logging  # Use structured logging for better integration
+    )
+    
+    # Add standard context information that will be included in all logs
+    LogContext.set_context(
+        component='apilama',
+        service='apilama',
+        version=get_env('APILAMA_VERSION', '1.0.0')
     )
     
     # Log initialization
@@ -84,9 +127,9 @@ def get_logger(name=None):
     if not name:
         name = 'apilama'
     
-    if PYLOGS_AVAILABLE:
-        from pylogs import get_logger as pylogs_get_logger
-        return pylogs_get_logger(name)
+    if LOGLAMA_AVAILABLE:
+        from loglama import get_logger as loglama_get_logger
+        return loglama_get_logger(name)
     else:
         import logging
         return logging.getLogger(name)
@@ -107,7 +150,7 @@ def log_request_context(func):
     
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if PYLOGS_AVAILABLE and hasattr(request, 'remote_addr'):
+        if LOGLAMA_AVAILABLE and hasattr(request, 'remote_addr'):
             context = {
                 'ip': request.remote_addr,
                 'method': request.method,
