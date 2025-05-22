@@ -20,9 +20,11 @@ APILama is the API gateway for the PyLama ecosystem. It serves as the central co
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install the package
-pip install -e .
+# Install the package in development mode
+pip install -e .  # This is important! Always install in development mode before starting
 ```
+
+> **IMPORTANT**: Always run `pip install -e .` before starting the project to ensure all dependencies are properly installed and the package is available in development mode.
 
 ## Usage
 
