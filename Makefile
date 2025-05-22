@@ -12,7 +12,7 @@ PYTEST := $(VENV)/bin/pytest
 BLACK := $(VENV)/bin/black
 FLAKE8 := $(VENV)/bin/flake8
 
-.PHONY: all setup venv clean test lint format run run-port
+.PHONY: all setup venv clean test lint format run run-port docker-test docker-build docker-clean docker-integration docker-mock
 
 all: setup
 
@@ -46,3 +46,28 @@ run-port: run
 # Clean up
 clean:
 	rm -rf $(VENV) *.egg-info build/ dist/ __pycache__/ .pytest_cache/ .coverage
+
+# Docker testing targets
+docker-build:
+	@echo "Building Docker test images..."
+	@./run_docker_tests.sh --build
+
+docker-test: docker-build
+	@echo "Running tests in Docker..."
+	@./run_docker_tests.sh --run-tests
+
+docker-integration: docker-build
+	@echo "Running integration tests in Docker..."
+	@./run_docker_tests.sh --integration
+
+docker-mock: docker-build
+	@echo "Starting APILama mock service in Docker..."
+	@./run_docker_tests.sh --mock-service
+
+docker-interactive: docker-build
+	@echo "Starting interactive Docker test environment..."
+	@./run_docker_tests.sh --interactive
+
+docker-clean:
+	@echo "Cleaning Docker test environment..."
+	@./run_docker_tests.sh --clean
