@@ -28,7 +28,8 @@ else:
 # Import PyLogs components
 try:
     from loglama.config.env_loader import load_env, get_env
-    from loglama.utils import configure_logging, LogContext, capture_context
+    from loglama.utils import configure_logging
+    from loglama.utils.context import LogContext, capture_context
     from loglama.formatters import ColoredFormatter, JSONFormatter
     from loglama.handlers import SQLiteHandler, EnhancedRotatingFileHandler
     LOGLAMA_AVAILABLE = True
@@ -201,4 +202,30 @@ def log_file_operation(operation, filename=None, success=True, error=None):
     elif success:
         logger.info(f"File {operation}: {filename}")
     else:
-        logger.error(f"File {operation} failed: {filename} - {error}")
+        logger.error(f"File {operation} failed: {filename} - {error}", extra={
+            'context': {
+                'operation': operation,
+                'filename': filename,
+                'error': error
+            }
+        })
+
+
+# Export LogContext for backward compatibility
+if LOGLAMA_AVAILABLE:
+    from loglama.utils.context import LogContext
+else:
+    # Define a simple LogContext class for backward compatibility
+    class LogContext:
+        @staticmethod
+        def set_context(**kwargs):
+            pass
+            
+        def __init__(self, **kwargs):
+            self.context = kwargs
+            
+        def __enter__(self):
+            return self
+            
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            pass
