@@ -12,7 +12,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PORT=8080 \
     HOST=0.0.0.0 \
     DEBUG=False \
-    PYBOX_URL=http://pybox-mock:8001 \
+    BEXY_URL=http://bexy-mock:8001 \
     PYLLM_URL=http://pyllm-mock:8002
 
 # Set working directory

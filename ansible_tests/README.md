@@ -14,7 +14,7 @@ This directory contains Ansible playbooks and tasks to test all endpoints of the
 - `file_operations_tests.yml`: Tests for file-related endpoints
 - `directory_operations_tests.yml`: Tests for directory-related endpoints
 - `shell_operations_tests.yml`: Tests for shell command execution
-- `pybox_tests.yml`: Tests for PyBox code execution
+- `bexy_tests.yml`: Tests for BEXY code execution
 - `pyllm_tests.yml`: Tests for PyLLM text generation
 - `pylama_tests.yml`: Tests for PyLama model execution
 
@@ -57,9 +57,9 @@ These tests cover the following APILama endpoints:
 4. **Shell Operations**
    - POST /api/shellama/shell (Execute shell command)
 
-5. **PyBox Operations**
-   - GET /api/pybox/health (Check PyBox health)
-   - POST /api/pybox/execute (Execute Python code)
+5. **BEXY Operations**
+   - GET /api/bexy/health (Check BEXY health)
+   - POST /api/bexy/execute (Execute Python code)
 
 6. **PyLLM Operations**
    - GET /api/pyllm/health (Check PyLLM health)

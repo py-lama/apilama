@@ -10,7 +10,7 @@
     test_directory: "/tmp/apilama_test"
     test_file: "/tmp/apilama_test/test_file.txt"
     test_content: "This is a test file created by Ansible"
-    python_code: "print('Hello from PyBox!')"
+    python_code: "print('Hello from BEXY!')"
   
   tasks:
     - name: Create test directory if it doesn't exist
@@ -40,8 +40,8 @@
     - name: Include Shell Operations Tests
       include_tasks: shell_operations_tests.yml
 
-    - name: Include PyBox Tests
-      include_tasks: pybox_tests.yml
+    - name: Include BEXY Tests
+      include_tasks: bexy_tests.yml
 
     - name: Include PyLLM Tests
       include_tasks: pyllm_tests.yml

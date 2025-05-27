@@ -14,10 +14,10 @@ services:
       - PORT=8080
       - HOST=0.0.0.0
       - DEBUG=True
-      - PYBOX_URL=http://pybox-mock:8001
+      - BEXY_URL=http://bexy-mock:8001
       - PYLLM_URL=http://pyllm-mock:8002
     depends_on:
-      - pybox-mock
+      - bexy-mock
       - pyllm-mock
     command: |
       bash -c "python -m pytest tests/ -v --junitxml=/app/test-reports/test-results.xml"
@@ -36,30 +36,30 @@ services:
       - HOST=0.0.0.0
       - DEBUG=True
       - MOCK_MODE=true
-      - PYBOX_URL=http://pybox-mock:8001
+      - BEXY_URL=http://bexy-mock:8001
       - PYLLM_URL=http://pyllm-mock:8002
     depends_on:
-      - pybox-mock
+      - bexy-mock
       - pyllm-mock
     command: |
       bash -c "python -m apilama.app --port 8080 --host 0.0.0.0"
 
-  pybox-mock:
+  bexy-mock:
     build:
-      context: ../pybox
+      context: ../bexy
       dockerfile: Dockerfile.test
     ports:
       - "8001:8001"
     volumes:
-      - ../pybox/tests:/app/tests
-      - ../pybox/test-reports:/app/test-reports
+      - ../bexy/tests:/app/tests
+      - ../bexy/test-reports:/app/test-reports
     environment:
       - PORT=8001
       - HOST=0.0.0.0
       - DEBUG=True
       - MOCK_MODE=true
     command: |
-      bash -c "python -m pybox.app --port 8001 --host 0.0.0.0"
+      bash -c "python -m bexy.app --port 8001 --host 0.0.0.0"
 
   pyllm-mock:
     build:

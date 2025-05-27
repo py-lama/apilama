@@ -1,45 +1,45 @@
 ---
-# PyBox Tests
-# Tests all PyBox-related endpoints in APILama
+# BEXY Tests
+# Tests all BEXY-related endpoints in APILama
 
-- name: Test PyBox Health Endpoint
+- name: Test BEXY Health Endpoint
   uri:
-    url: "{{ api_base_url }}/api/pybox/health"
+    url: "{{ api_base_url }}/api/bexy/health"
     method: GET
     return_content: yes
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pybox_health_result
-  failed_when: pybox_health_result.status == 200 and pybox_health_result.json.status != "ok"
-  ignore_errors: yes  # Continue even if PyBox is not available
+  register: bexy_health_result
+  failed_when: bexy_health_result.status == 200 and bexy_health_result.json.status != "ok"
+  ignore_errors: yes  # Continue even if BEXY is not available
 
-- name: Display PyBox Health Result
+- name: Display BEXY Health Result
   debug:
-    var: pybox_health_result.json
-  when: pybox_health_result is defined
+    var: bexy_health_result.json
+  when: bexy_health_result is defined
 
-- name: Test PyBox Execute Endpoint - Simple Print
+- name: Test BEXY Execute Endpoint - Simple Print
   uri:
-    url: "{{ api_base_url }}/api/pybox/execute"
+    url: "{{ api_base_url }}/api/bexy/execute"
     method: POST
     body_format: json
     body:
-      code: "print('Hello from Ansible PyBox test!')"
+      code: "print('Hello from Ansible BEXY test!')"
       options:
         timeout: 5
         memory_limit: 128
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pybox_execute_result
-  failed_when: pybox_execute_result.status == 200 and pybox_execute_result.json.status != "success"
-  ignore_errors: yes  # Continue even if PyBox is not available
+  register: bexy_execute_result
+  failed_when: bexy_execute_result.status == 200 and bexy_execute_result.json.status != "success"
+  ignore_errors: yes  # Continue even if BEXY is not available
 
-- name: Display PyBox Execute Result
+- name: Display BEXY Execute Result
   debug:
-    var: pybox_execute_result.json
-  when: pybox_execute_result is defined
+    var: bexy_execute_result.json
+  when: bexy_execute_result is defined
 
-- name: Test PyBox Execute Endpoint - Math Operations
+- name: Test BEXY Execute Endpoint - Math Operations
   uri:
-    url: "{{ api_base_url }}/api/pybox/execute"
+    url: "{{ api_base_url }}/api/bexy/execute"
     method: POST
     body_format: json
     body:
@@ -55,18 +55,18 @@
         timeout: 5
         memory_limit: 128
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pybox_math_result
-  failed_when: pybox_math_result.status == 200 and pybox_math_result.json.status != "success"
-  ignore_errors: yes  # Continue even if PyBox is not available
+  register: bexy_math_result
+  failed_when: bexy_math_result.status == 200 and bexy_math_result.json.status != "success"
+  ignore_errors: yes  # Continue even if BEXY is not available
 
-- name: Display PyBox Math Result
+- name: Display BEXY Math Result
   debug:
-    var: pybox_math_result.json
-  when: pybox_math_result is defined
+    var: bexy_math_result.json
+  when: bexy_math_result is defined
 
-- name: Test PyBox Execute Endpoint - List Comprehension
+- name: Test BEXY Execute Endpoint - List Comprehension
   uri:
-    url: "{{ api_base_url }}/api/pybox/execute"
+    url: "{{ api_base_url }}/api/bexy/execute"
     method: POST
     body_format: json
     body:
@@ -80,11 +80,11 @@
         timeout: 5
         memory_limit: 128
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pybox_list_result
-  failed_when: pybox_list_result.status == 200 and pybox_list_result.json.status != "success"
-  ignore_errors: yes  # Continue even if PyBox is not available
+  register: bexy_list_result
+  failed_when: bexy_list_result.status == 200 and bexy_list_result.json.status != "success"
+  ignore_errors: yes  # Continue even if BEXY is not available
 
-- name: Display PyBox List Result
+- name: Display BEXY List Result
   debug:
-    var: pybox_list_result.json
-  when: pybox_list_result is defined
+    var: bexy_list_result.json
+  when: bexy_list_result is defined

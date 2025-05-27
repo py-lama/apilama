@@ -1,11 +1,11 @@
 # APILama
 
-APILama is the API gateway for the PyLama ecosystem. It serves as the central communication layer between the frontend WebLama interface and the various backend services (PyLama, PyBox, PyLLM, SheLLama). APILama integrates with LogLama as the primary service for centralized logging, environment management, and service orchestration.
+APILama is the API gateway for the PyLama ecosystem. It serves as the central communication layer between the frontend WebLama interface and the various backend services (PyLama, BEXY, PyLLM, SheLLama). APILama integrates with LogLama as the primary service for centralized logging, environment management, and service orchestration.
 
 ## Features
 
 - **Unified API Gateway**: Single entry point for all PyLama ecosystem services
-- **Service Routing**: Intelligent routing of requests to appropriate backend services (PyBox, PyLLM, SheLLama, PyLama)
+- **Service Routing**: Intelligent routing of requests to appropriate backend services (BEXY, PyLLM, SheLLama, PyLama)
 - **RESTful API Design**: Clean and consistent API endpoints for all operations
 - **Cross-Origin Resource Sharing (CORS)**: Support for cross-origin requests from the WebLama frontend
 - **Authentication and Authorization**: Secure access to API endpoints
@@ -58,7 +58,7 @@ APILama uses the following environment variables for configuration:
 - `PORT`: The port to run the server on (default: 8080)
 - `HOST`: The host to bind to (default: 127.0.0.1)
 - `DEBUG`: Enable debug mode (default: False)
-- `PYBOX_API_URL`: URL of the PyBox API (default: http://localhost:8000)
+- `BEXY_API_URL`: URL of the BEXY API (default: http://localhost:8000)
 - `PYLLM_API_URL`: URL of the PyLLM API (default: http://localhost:8001)
 - `SHELLAMA_API_URL`: URL of the SheLLama API (default: http://localhost:8002)
 - `PYLAMA_API_URL`: URL of the PyLama API (default: http://localhost:8003)
@@ -95,10 +95,10 @@ DELETE /api/shellama/directory?directory=/path      # Delete a directory
 POST /api/shellama/shell  # Execute a shell command
 ```
 
-### PyBox Endpoints
+### BEXY Endpoints
 ```
-GET /api/pybox/health     # Check PyBox health
-POST /api/pybox/execute   # Execute Python code
+GET /api/bexy/health     # Check BEXY health
+POST /api/bexy/execute   # Execute Python code
 ```
 
 ### PyLLM Endpoints

@@ -2,37 +2,37 @@
 # -*- coding: utf-8 -*-
 
 """
-PyBox API Routes
+BEXY API Routes
 
-This module provides Flask routes for interacting with the PyBox service.
+This module provides Flask routes for interacting with the BEXY service.
 """
 
 from flask import Blueprint, request, jsonify, current_app
 from apilama.logger import logger
 
-# Create a blueprint for PyBox routes
-pybox_routes = Blueprint('pybox_routes', __name__)
+# Create a blueprint for BEXY routes
+bexy_routes = Blueprint('bexy_routes', __name__)
 
 
-@pybox_routes.route('/api/pybox/health', methods=['GET'])
+@bexy_routes.route('/api/bexy/health', methods=['GET'])
 def health_check():
-    """Health check endpoint for PyBox service.
+    """Health check endpoint for BEXY service.
     
     Returns:
-        JSON response with the status of the PyBox service
+        JSON response with the status of the BEXY service
     """
-    logger.info('PyBox health check')
+    logger.info('BEXY health check')
     
-    # TODO: Implement actual health check for PyBox service
+    # TODO: Implement actual health check for BEXY service
     return jsonify({
         'status': 'ok',
-        'service': 'pybox'
+        'service': 'bexy'
     })
 
 
-@pybox_routes.route('/api/pybox/execute', methods=['POST'])
+@bexy_routes.route('/api/bexy/execute', methods=['POST'])
 def execute_code():
-    """Execute code in a sandbox using PyBox.
+    """Execute code in a sandbox using BEXY.
     
     Returns:
         JSON response with the execution results
@@ -47,9 +47,9 @@ def execute_code():
         }), 400
     
     code = data['code']
-    logger.info(f'Executing code with PyBox')
+    logger.info(f'Executing code with BEXY')
     
-    # TODO: Implement actual code execution with PyBox
+    # TODO: Implement actual code execution with BEXY
     # This is a placeholder for the actual implementation
     result = {
         'status': 'success',

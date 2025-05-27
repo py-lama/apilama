@@ -136,7 +136,7 @@ fi
 # Run integration tests if requested
 if [ "$INTEGRATION" = true ]; then
     print_header "Running APILama integration tests"
-    docker-compose -f docker-compose.test.yml up pybox-mock pyllm-mock apilama-test
+    docker-compose -f docker-compose.test.yml up bexy-mock pyllm-mock apilama-test
     exit 0
 fi
 
