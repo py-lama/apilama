@@ -1,6 +1,9 @@
 logs
-.db
+.log
 .pid
+.db
+.sqlite
+.env
 example.png
 example.db
 example.txt
