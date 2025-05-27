@@ -12,7 +12,7 @@ PYTEST := $(VENV)/bin/pytest
 BLACK := $(VENV)/bin/black
 FLAKE8 := $(VENV)/bin/flake8
 
-.PHONY: all setup venv clean test lint format run run-port docker-test docker-build docker-clean docker-integration docker-mock
+.PHONY: all setup venv clean test lint format run run-port docker-test docker-build docker-clean docker-integration docker-mock test-package update-version publish publish-test
 
 all: setup
 
@@ -71,3 +71,29 @@ docker-interactive: docker-build
 docker-clean:
 	@echo "Cleaning Docker test environment..."
 	@./run_docker_tests.sh --clean
+
+
+# Build package
+build: setup
+	@echo "Building package..."
+	@. venv/bin/activate && rm -rf dist/* && python setup.py sdist bdist_wheel
+
+# Test package
+test-package: setup
+	@echo "Testing package..."
+	@. venv/bin/activate && pytest
+
+# Update version
+update-version:
+	@echo "Updating package version..."
+	@python ../scripts/update_version.py
+
+# Publish package to PyPI
+publish: test-package update-version build
+	@echo "Publishing package to PyPI..."
+	@. venv/bin/activate && twine check dist/* && twine upload dist/*
+
+# Publish package to TestPyPI
+publish-test: test-package update-version build
+	@echo "Publishing package to TestPyPI..."
+	@. venv/bin/activate && twine check dist/* && twine upload --repository testpypi dist/*
