@@ -61,7 +61,7 @@ APILama uses the following environment variables for configuration:
 - `BEXY_API_URL`: URL of the BEXY API (default: http://localhost:8000)
 - `GETLLM_API_URL`: URL of the PyLLM API (default: http://localhost:8001)
 - `SHELLAMA_API_URL`: URL of the SheLLama API (default: http://localhost:8002)
-- `PYLAMA_API_URL`: URL of the PyLama API (default: http://localhost:8003)
+- `DEVLAMA_API_URL`: URL of the PyLama API (default: http://localhost:8003)
 
 You can set these variables in a `.env` file or pass them directly when starting the server.
 
@@ -109,9 +109,9 @@ POST /api/getllm/generate  # Generate code or text
 
 ### PyLama Endpoints
 ```
-GET /api/pylama/health    # Check PyLama health
-GET /api/pylama/models    # List available models
-POST /api/pylama/execute  # Execute a model
+GET /api/devlama/health    # Check PyLama health
+GET /api/devlama/models    # List available models
+POST /api/devlama/execute  # Execute a model
 ```
 
 ## Development

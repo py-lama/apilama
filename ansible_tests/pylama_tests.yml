@@ -4,37 +4,37 @@
 
 - name: Test PyLama Health Endpoint
   uri:
-    url: "{{ api_base_url }}/api/pylama/health"
+    url: "{{ api_base_url }}/api/devlama/health"
     method: GET
     return_content: yes
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pylama_health_result
-  failed_when: pylama_health_result.status == 200 and pylama_health_result.json.status != "ok"
+  register: devlama_health_result
+  failed_when: devlama_health_result.status == 200 and devlama_health_result.json.status != "ok"
   ignore_errors: yes  # Continue even if PyLama is not available
 
 - name: Display PyLama Health Result
   debug:
-    var: pylama_health_result.json
-  when: pylama_health_result is defined
+    var: devlama_health_result.json
+  when: devlama_health_result is defined
 
 - name: Test PyLama Models Endpoint
   uri:
-    url: "{{ api_base_url }}/api/pylama/models"
+    url: "{{ api_base_url }}/api/devlama/models"
     method: GET
     return_content: yes
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pylama_models_result
-  failed_when: pylama_models_result.status == 200 and pylama_models_result.json.status != "success"
+  register: devlama_models_result
+  failed_when: devlama_models_result.status == 200 and devlama_models_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLama is not available
 
 - name: Display PyLama Models Result
   debug:
-    var: pylama_models_result.json
-  when: pylama_models_result is defined
+    var: devlama_models_result.json
+  when: devlama_models_result is defined
 
 - name: Test PyLama Execute Endpoint - Simple Query
   uri:
-    url: "{{ api_base_url }}/api/pylama/execute"
+    url: "{{ api_base_url }}/api/devlama/execute"
     method: POST
     body_format: json
     body:
@@ -44,18 +44,18 @@
         max_tokens: 100
         temperature: 0.7
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pylama_execute_result
-  failed_when: pylama_execute_result.status == 200 and pylama_execute_result.json.status != "success"
+  register: devlama_execute_result
+  failed_when: devlama_execute_result.status == 200 and devlama_execute_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLama is not available
 
 - name: Display PyLama Execute Result
   debug:
-    var: pylama_execute_result.json
-  when: pylama_execute_result is defined
+    var: devlama_execute_result.json
+  when: devlama_execute_result is defined
 
 - name: Test PyLama Execute Endpoint - Code Analysis
   uri:
-    url: "{{ api_base_url }}/api/pylama/execute"
+    url: "{{ api_base_url }}/api/devlama/execute"
     method: POST
     body_format: json
     body:
@@ -65,11 +65,11 @@
         max_tokens: 200
         temperature: 0.5
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pylama_code_result
-  failed_when: pylama_code_result.status == 200 and pylama_code_result.json.status != "success"
+  register: devlama_code_result
+  failed_when: devlama_code_result.status == 200 and devlama_code_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLama is not available
 
 - name: Display PyLama Code Analysis Result
   debug:
-    var: pylama_code_result.json
-  when: pylama_code_result is defined
+    var: devlama_code_result.json
+  when: devlama_code_result is defined

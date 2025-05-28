@@ -8,9 +8,9 @@ with open("README.md", "r") as fh:
 
 setup(
     name="apilama",
-    version="0.1.7",
+    version="0.1.8",
     author="Tom Sapletta",
-    author_email="info@pylama.dev",
+    author_email="info@devlama.dev",
     description="Backend API service for the PyLama ecosystem",
     long_description=long_description,
     long_description_content_type="text/markdown",

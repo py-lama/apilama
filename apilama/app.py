@@ -27,11 +27,11 @@ from flask_cors import CORS
 # Get the logger
 logger = get_logger('apilama')
 
-# Add the parent directory to sys.path to import pylama modules
+# Add the parent directory to sys.path to import devlama modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Import blueprints
-from apilama.routes.pylama_routes import pylama_routes
+from apilama.routes.devlama_routes import devlama_routes
 from apilama.routes.bexy_routes import bexy_routes
 from apilama.routes.getllm_routes import getllm_routes
 from apilama.routes.shellama_routes import shellama_routes
@@ -76,7 +76,7 @@ def create_app(test_config=None):
         return response
     
     # Register blueprints
-    app.register_blueprint(pylama_routes)
+    app.register_blueprint(devlama_routes)
     app.register_blueprint(bexy_routes)
     app.register_blueprint(getllm_routes)
     app.register_blueprint(shellama_routes)
@@ -95,7 +95,7 @@ def create_app(test_config=None):
             'cors_enabled': True,
             'debug_mode': app.config['DEBUG'],
             'blueprints': [
-                'pylama_routes',
+                'devlama_routes',
                 'bexy_routes',
                 'getllm_routes',
                 'shellama_routes',

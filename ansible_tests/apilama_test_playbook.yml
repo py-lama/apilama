@@ -47,7 +47,7 @@
       include_tasks: getllm_tests.yml
 
     - name: Include PyLama Tests
-      include_tasks: pylama_tests.yml
+      include_tasks: devlama_tests.yml
 
     # Cleanup
     - name: Clean up test directory

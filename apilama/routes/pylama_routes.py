@@ -11,10 +11,10 @@ from flask import Blueprint, request, jsonify, current_app
 from apilama.logger import logger
 
 # Create a blueprint for PyLama routes
-pylama_routes = Blueprint('pylama_routes', __name__)
+devlama_routes = Blueprint('devlama_routes', __name__)
 
 
-@pylama_routes.route('/api/pylama/health', methods=['GET'])
+@devlama_routes.route('/api/devlama/health', methods=['GET'])
 def health_check():
     """Health check endpoint for PyLama service.
     
@@ -26,11 +26,11 @@ def health_check():
     # TODO: Implement actual health check for PyLama service
     return jsonify({
         'status': 'ok',
-        'service': 'pylama'
+        'service': 'devlama'
     })
 
 
-@pylama_routes.route('/api/pylama/execute', methods=['POST'])
+@devlama_routes.route('/api/devlama/execute', methods=['POST'])
 def execute_code():
     """Execute code using PyLama.
     
