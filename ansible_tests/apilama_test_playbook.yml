@@ -44,7 +44,7 @@
       include_tasks: bexy_tests.yml
 
     - name: Include PyLLM Tests
-      include_tasks: pyllm_tests.yml
+      include_tasks: getllm_tests.yml
 
     - name: Include PyLama Tests
       include_tasks: pylama_tests.yml

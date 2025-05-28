@@ -11,10 +11,10 @@ from flask import Blueprint, request, jsonify, current_app
 from apilama.logger import logger
 
 # Create a blueprint for PyLLM routes
-pyllm_routes = Blueprint('pyllm_routes', __name__)
+getllm_routes = Blueprint('getllm_routes', __name__)
 
 
-@pyllm_routes.route('/api/pyllm/health', methods=['GET'])
+@getllm_routes.route('/api/getllm/health', methods=['GET'])
 def health_check():
     """Health check endpoint for PyLLM service.
     
@@ -26,11 +26,11 @@ def health_check():
     # TODO: Implement actual health check for PyLLM service
     return jsonify({
         'status': 'ok',
-        'service': 'pyllm'
+        'service': 'getllm'
     })
 
 
-@pyllm_routes.route('/api/pyllm/generate', methods=['POST'])
+@getllm_routes.route('/api/getllm/generate', methods=['POST'])
 def generate_text():
     """Generate text using PyLLM.
     

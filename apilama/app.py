@@ -33,7 +33,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 # Import blueprints
 from apilama.routes.pylama_routes import pylama_routes
 from apilama.routes.bexy_routes import bexy_routes
-from apilama.routes.pyllm_routes import pyllm_routes
+from apilama.routes.getllm_routes import getllm_routes
 from apilama.routes.shellama_routes import shellama_routes
 from apilama.routes.file_routes import file_routes
 from apilama.routes.git_routes import git_routes
@@ -78,7 +78,7 @@ def create_app(test_config=None):
     # Register blueprints
     app.register_blueprint(pylama_routes)
     app.register_blueprint(bexy_routes)
-    app.register_blueprint(pyllm_routes)
+    app.register_blueprint(getllm_routes)
     app.register_blueprint(shellama_routes)
     app.register_blueprint(file_routes)
     app.register_blueprint(git_routes)
@@ -97,7 +97,7 @@ def create_app(test_config=None):
             'blueprints': [
                 'pylama_routes',
                 'bexy_routes',
-                'pyllm_routes',
+                'getllm_routes',
                 'shellama_routes',
                 'file_routes',
                 'git_routes',

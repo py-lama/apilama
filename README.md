@@ -59,7 +59,7 @@ APILama uses the following environment variables for configuration:
 - `HOST`: The host to bind to (default: 127.0.0.1)
 - `DEBUG`: Enable debug mode (default: False)
 - `BEXY_API_URL`: URL of the BEXY API (default: http://localhost:8000)
-- `PYLLM_API_URL`: URL of the PyLLM API (default: http://localhost:8001)
+- `GETLLM_API_URL`: URL of the PyLLM API (default: http://localhost:8001)
 - `SHELLAMA_API_URL`: URL of the SheLLama API (default: http://localhost:8002)
 - `PYLAMA_API_URL`: URL of the PyLama API (default: http://localhost:8003)
 
@@ -103,8 +103,8 @@ POST /api/bexy/execute   # Execute Python code
 
 ### PyLLM Endpoints
 ```
-GET /api/pyllm/health     # Check PyLLM health
-POST /api/pyllm/generate  # Generate code or text
+GET /api/getllm/health     # Check PyLLM health
+POST /api/getllm/generate  # Generate code or text
 ```
 
 ### PyLama Endpoints

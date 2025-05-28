@@ -4,22 +4,22 @@
 
 - name: Test PyLLM Health Endpoint
   uri:
-    url: "{{ api_base_url }}/api/pyllm/health"
+    url: "{{ api_base_url }}/api/getllm/health"
     method: GET
     return_content: yes
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pyllm_health_result
-  failed_when: pyllm_health_result.status == 200 and pyllm_health_result.json.status != "ok"
+  register: getllm_health_result
+  failed_when: getllm_health_result.status == 200 and getllm_health_result.json.status != "ok"
   ignore_errors: yes  # Continue even if PyLLM is not available
 
 - name: Display PyLLM Health Result
   debug:
-    var: pyllm_health_result.json
-  when: pyllm_health_result is defined
+    var: getllm_health_result.json
+  when: getllm_health_result is defined
 
 - name: Test PyLLM Generate Endpoint - Simple Text
   uri:
-    url: "{{ api_base_url }}/api/pyllm/generate"
+    url: "{{ api_base_url }}/api/getllm/generate"
     method: POST
     body_format: json
     body:
@@ -29,18 +29,18 @@
         temperature: 0.7
         model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pyllm_generate_result
-  failed_when: pyllm_generate_result.status == 200 and pyllm_generate_result.json.status != "success"
+  register: getllm_generate_result
+  failed_when: getllm_generate_result.status == 200 and getllm_generate_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLLM is not available
 
 - name: Display PyLLM Generate Result
   debug:
-    var: pyllm_generate_result.json
-  when: pyllm_generate_result is defined
+    var: getllm_generate_result.json
+  when: getllm_generate_result is defined
 
 - name: Test PyLLM Generate Endpoint - Code Generation
   uri:
-    url: "{{ api_base_url }}/api/pyllm/generate"
+    url: "{{ api_base_url }}/api/getllm/generate"
     method: POST
     body_format: json
     body:
@@ -50,18 +50,18 @@
         temperature: 0.5
         model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pyllm_code_result
-  failed_when: pyllm_code_result.status == 200 and pyllm_code_result.json.status != "success"
+  register: getllm_code_result
+  failed_when: getllm_code_result.status == 200 and getllm_code_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLLM is not available
 
 - name: Display PyLLM Code Result
   debug:
-    var: pyllm_code_result.json
-  when: pyllm_code_result is defined
+    var: getllm_code_result.json
+  when: getllm_code_result is defined
 
 - name: Test PyLLM Generate Endpoint - With System Prompt
   uri:
-    url: "{{ api_base_url }}/api/pyllm/generate"
+    url: "{{ api_base_url }}/api/getllm/generate"
     method: POST
     body_format: json
     body:
@@ -72,11 +72,11 @@
         temperature: 0.7
         model: "{{ lookup('env', 'OLLAMA_MODEL') | default('llama2', true) }}"
     status_code: [200, 503, 404]  # Accept 503/404 for service unavailable
-  register: pyllm_system_result
-  failed_when: pyllm_system_result.status == 200 and pyllm_system_result.json.status != "success"
+  register: getllm_system_result
+  failed_when: getllm_system_result.status == 200 and getllm_system_result.json.status != "success"
   ignore_errors: yes  # Continue even if PyLLM is not available
 
 - name: Display PyLLM System Prompt Result
   debug:
-    var: pyllm_system_result.json
-  when: pyllm_system_result is defined
+    var: getllm_system_result.json
+  when: getllm_system_result is defined
