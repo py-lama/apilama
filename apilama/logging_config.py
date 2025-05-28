@@ -4,7 +4,7 @@
 """
 APILama Logging Configuration
 
-This module configures logging for APILama using the PyLogs package.
+This module configures logging for APILama using the LogLama package.
 It ensures that environment variables are loaded before any other libraries.
 """
 
@@ -17,15 +17,15 @@ from pathlib import Path
 loglama_path = Path(__file__).parent.parent.parent / 'loglama'
 if loglama_path.exists() and str(loglama_path) not in sys.path:
     sys.path.insert(0, str(loglama_path))
-    print(f"Added PyLogs path: {loglama_path}")
+    print(f"Added LogLama path: {loglama_path}")
 else:
     # Try an alternative path calculation
     alt_loglama_path = Path('/home/tom/github/py-lama/loglama')
     if alt_loglama_path.exists() and str(alt_loglama_path) not in sys.path:
         sys.path.insert(0, str(alt_loglama_path))
-        print(f"Added alternative PyLogs path: {alt_loglama_path}")
+        print(f"Added alternative LogLama path: {alt_loglama_path}")
 
-# Import PyLogs components
+# Import LogLama components
 try:
     from loglama.config.env_loader import load_env, get_env
     from loglama.utils import configure_logging
@@ -34,19 +34,19 @@ try:
     from loglama.handlers import SQLiteHandler, EnhancedRotatingFileHandler
     LOGLAMA_AVAILABLE = True
 except ImportError as e:
-    print(f"PyLogs import error: {e}")
+    print(f"LogLama import error: {e}")
     LOGLAMA_AVAILABLE = False
 
 
 def init_logging():
     """
-    Initialize logging for APILama using PyLogs.
+    Initialize logging for APILama using LogLama.
     
     This function should be called at the very beginning of the application
     before any other imports or configurations are done.
     """
     if not LOGLAMA_AVAILABLE:
-        print("PyLogs package not available. Using default logging configuration.")
+        print("LogLama package not available. Using default logging configuration.")
         return False
     
     # Load environment variables from .env files
@@ -111,7 +111,7 @@ def init_logging():
     )
     
     # Log initialization
-    logger.info('APILama logging initialized with PyLogs')
+    logger.info('APILama logging initialized with LogLama')
     return True
 
 

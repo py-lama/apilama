@@ -11,7 +11,7 @@ This module provides the Flask application for the APILama service.
 # This ensures environment variables are loaded before other libraries
 from apilama.logging_config import init_logging, get_logger
 
-# Initialize logging with PyLogs
+# Initialize logging with LogLama
 init_logging()
 
 # Now import other standard libraries

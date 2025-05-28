@@ -3,7 +3,7 @@ import os
 import glob
 from pathlib import Path
 
-# Import PyLogs utilities
+# Import LogLama utilities
 from apilama.logging_config import get_logger, log_file_operation, log_request_context, LogContext
 
 file_routes = Blueprint('file_routes', __name__)
