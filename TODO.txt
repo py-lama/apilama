@@ -1,0 +1,61 @@
+# Project Update Tasks
+
+## Main Objectives
+1. Update SheLLama project based on WebLama and APILama
+2. Implement Ansible tests similar to APILama
+3. Optimize backend-frontend communication
+
+## Project Integration Tasks
+
+### SheLLama Improvements
+- [ ] Review Git and file handling functions from WebLama
+- [ ] Implement suitable functions directly in SheLLama
+- [ ] Minimize backend handling through APILama
+- [ ] Create test markdown folder for:
+  * File deletion testing
+  * Rename operations
+  * File editing
+  * Basic shell commands handling
+  * Git operations
+  * DevOps tools integration
+
+### APILama Gateway
+- [ ] Verify APILama functions as gateway for:
+  * BEXY
+  * PyLLM
+  * SheLLama
+  * PyLama
+  * WebLama
+  * APILama
+
+### Error Handling & Debugging
+- [ ] Implement comprehensive frontend query handling
+- [ ] Enhance backend error reporting
+- [ ] Add debug window integration
+- [ ] Implement error visualization in frontend
+
+## Project Configuration Updates
+
+### Documentation & Build Files
+- [ ] Update Makefile in each project
+- [ ] Update README files
+- [ ] Verify env.example files contain all necessary variables
+- [ ] Check external dependency configurations
+
+### Testing
+- [ ] Add Ansible tests for all CLI shell projects
+- [ ] Add API endpoint tests
+- [ ] Copy existing Ansible tests from APILama where applicable
+
+## Environment & License Management
+
+### Python Environment Support
+- [ ] Implement virtualenv support
+- [ ] Add venv configuration
+- [ ] Setup Poetry integration
+- [ ] Configure Pipenv support
+
+### License Verification
+- [ ] Verify Apache v2 license in Python projects
+- [ ] Check license in Node.js/npm projects
+- [ ] Update license files if needed
