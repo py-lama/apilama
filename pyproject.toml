@@ -6,10 +6,31 @@ build-backend = "poetry.core.masonry.api"
 name = "apilama"
 version = "0.1.16"
 description = "Backend API service for the PyLama ecosystem"
-authors = [ "Tom Sapletta <info@softreck.dev>",]
+authors = ["Tom Sapletta <info@softreck.dev>"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/py-lama/apilama"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/py-lama/apilama"
+Documentation = "https://py-lama.github.io/apilama/"
+Repository = "https://github.com/py-lama/apilama"
+Changelog = "https://github.com/py-lama/apilama/blob/main/CHANGELOG.md"
+Tracker = "https://github.com/py-lama/apilama/issues"
+Download = "https://pypi.org/project/apilama/"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
